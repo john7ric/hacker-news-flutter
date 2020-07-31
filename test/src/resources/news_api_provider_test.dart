@@ -15,7 +15,7 @@ main() {
       return await Response(json.encode([1, 2, 3, 4, 5]), 200);
     });
 
-    final response = await newsApiProvider.getTopItems();
+    final response = await newsApiProvider.fetchTopIds();
     expect(response, [1, 2, 3, 4, 5]);
   });
 
@@ -30,7 +30,7 @@ main() {
       return response;
     });
 
-    final item = await newsApiProvider.getItemDetails(999);
+    final item = await newsApiProvider.fetchItem(999);
     expect(item.id, 123);
   });
 }
