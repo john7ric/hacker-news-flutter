@@ -1,21 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:hacker_news/src/blocs/stories_bloc.dart';
+import 'package:hacker_news/src/widgets/list_item.dart';
 import 'package:provider/provider.dart';
 
 class NewsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bloc = StoriesBloc();
-    bloc.fetchTopIds();
     return Scaffold(
-      body: Container(
-        child: buildList(bloc),
+      body: Consumer(
+        builder: (context, StoriesBloc bloc, child) {
+          bloc.fetchTopIds();
+          return Container(
+            child: buildList(bloc),
+          );
+        },
       ),
     );
   }
 }
 
 Widget buildList(StoriesBloc bloc) {
+  /// builds a list from fetched ids
+  /// loads each tile by feching item for ids
+  ///
   return StreamBuilder(
       stream: bloc.topIds,
       builder: (context, AsyncSnapshot<List<int>> snapshot) {
@@ -27,8 +34,7 @@ Widget buildList(StoriesBloc bloc) {
                   padding: EdgeInsets.all(30),
                   child: Container(
                     width: double.infinity,
-                    child:
-                        Text('item ID fetched is  : ${snapshot.data[index]} '),
+                    child: ListItem(snapshot.data[index]),
                   ),
                 );
               });

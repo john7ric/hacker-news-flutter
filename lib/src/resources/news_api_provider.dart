@@ -19,7 +19,7 @@ class NewsApiProvider implements Source {
 
   Future<ItemModel> fetchItem(int id) async {
     /// get details of an item
-
+    print('api is called for => $id');
     final response = await client.get('$_root/item/$id.json');
     final parsedJson = json.decode(response.body);
     return ItemModel.fromJSON(parsedJson);

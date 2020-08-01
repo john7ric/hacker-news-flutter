@@ -16,7 +16,8 @@ class StoriesBloc {
   Function(int) get fetchItem => _itemsFetcher.sink.add;
   _scanTransformer() {
     return ScanStreamTransformer(
-        (Map<int, Future<ItemModel>> cache, int id, _) {
+        (Map<int, Future<ItemModel>> cache, int id, count) {
+      print('fetcher called $count times');
       cache[id] = Repository().fetchItem(id);
       return cache;
     }, <int, Future<ItemModel>>{});

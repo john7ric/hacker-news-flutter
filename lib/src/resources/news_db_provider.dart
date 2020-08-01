@@ -9,6 +9,10 @@ class NewsDbProvider implements Source, Cache {
   /// class for handling sqlite connections
   Database db;
 
+  NewsDbProvider() {
+    init();
+  }
+
   init() async {
     Directory dir = await getApplicationDocumentsDirectory();
     final path = join(dir.path, 'items.db');
@@ -42,16 +46,19 @@ class NewsDbProvider implements Source, Cache {
   @override
   Future<ItemModel> fetchItem(int id) async {
     /// sqlite query to fetch an item
+    print('db is called for => $id');
     final maps = await db.query('items', where: 'id=?', whereArgs: [id]);
     if (maps.length > 0) {
       return ItemModel.fromDB(maps[0]);
     }
+    print(' db returns null');
     return null;
   }
 
   @override
-  Future<int> addItem(ItemModel item) {
-    return db.insert('items', item.mapForDB());
+  Future<int> addItem(ItemModel item) async {
+    return db.insert('items', item.mapForDB(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   @override
@@ -61,8 +68,4 @@ class NewsDbProvider implements Source, Cache {
   }
 }
 
-NewsDbProvider dbProviderInstance() {
-  final db = NewsDbProvider();
-  db.init();
-  return db;
-}
+final newsDBProvider = NewsDbProvider();

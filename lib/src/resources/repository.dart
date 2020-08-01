@@ -6,20 +6,20 @@ import 'news_db_provider.dart';
 class Repository {
   /// repository class for handling items fetching
 
-  List<Source> sources = [NewsApiProvider(), dbProviderInstance()];
-  List<Cache> caches = [dbProviderInstance()];
+  List<Source> sources = [newsDBProvider, NewsApiProvider()];
+  List<Cache> caches = [newsDBProvider];
 
   Future<List<int>> fetchTopIds() {
     /// proxy fetch top id call to api provider
     /// as there is no caching
-    return sources[0].fetchTopIds();
+    return sources[1].fetchTopIds();
   }
 
   Future<ItemModel> fetchItem(int id) async {
     ///checking if item already cached inside db else
     /// fetches and return the item and also store in
     /// to the sqlite instance
-    Source source;
+    var source;
     var item;
     for (source in sources) {
       item = await source.fetchItem(id);
@@ -27,14 +27,16 @@ class Repository {
         break;
       }
     }
+    cacheItem(item);
+    for (var cache in caches) {
+      if (cache != source) {
+        cache.addItem(item);
+      }
+    }
     return item;
   }
 
-  cacheItem(ItemModel item) {
-    for (Cache c in caches) {
-      c.addItem(item);
-    }
-  }
+  cacheItem(ItemModel item) {}
 }
 
 abstract class Source {
