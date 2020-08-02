@@ -14,6 +14,7 @@ class NewsDbProvider implements Source, Cache {
   }
 
   init() async {
+    ////initialize the db else connect to existing one
     Directory dir = await getApplicationDocumentsDirectory();
     final path = join(dir.path, 'items.db');
     db = await openDatabase(
@@ -46,13 +47,16 @@ class NewsDbProvider implements Source, Cache {
   @override
   Future<ItemModel> fetchItem(int id) async {
     /// sqlite query to fetch an item
-    print('db is called for => $id');
     final maps = await db.query('items', where: 'id=?', whereArgs: [id]);
     if (maps.length > 0) {
       return ItemModel.fromDB(maps[0]);
     }
-    print(' db returns null');
     return null;
+  }
+
+  @override
+  Future<int> clearCache() {
+    return db.delete('items');
   }
 
   @override
@@ -68,4 +72,6 @@ class NewsDbProvider implements Source, Cache {
   }
 }
 
+/// intance to be shared to repository both
+/// to Source and Cache lists
 final newsDBProvider = NewsDbProvider();

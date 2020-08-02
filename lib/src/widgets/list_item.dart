@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hacker_news/src/blocs/stories_bloc.dart';
 import 'package:hacker_news/src/models/item_model.dart';
+import 'package:hacker_news/src/widgets/loading_container.dart';
 import 'package:provider/provider.dart';
 
 class ListItem extends StatelessWidget {
@@ -21,15 +22,24 @@ class ListItem extends StatelessWidget {
                 future: snapshot.data[id],
                 builder: (context, AsyncSnapshot<ItemModel> itemSnapshot) {
                   if (!itemSnapshot.hasData) {
-                    return Center(child: CircularProgressIndicator());
+                    return LoadingView();
                   }
+
+                  ItemModel item = itemSnapshot.data;
                   return ListTile(
-                    title: Text('${itemSnapshot.data.title}'),
+                    title: Text('${item.title}'),
+                    subtitle: Text('${item.score} votes'),
+                    trailing: Column(
+                      children: <Widget>[
+                        Icon(Icons.comment),
+                        Text('${item.descendants}')
+                      ],
+                    ),
                   );
                 },
               );
             } else {
-              return Center(child: CircularProgressIndicator());
+              return LoadingView();
             }
           },
         );

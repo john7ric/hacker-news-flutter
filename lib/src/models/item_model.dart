@@ -28,7 +28,7 @@ class ItemModel {
         url = parsedJSON['url'],
         score = parsedJSON['score'],
         title = parsedJSON['title'] ?? '',
-        descendants = parsedJSON['descendants'];
+        descendants = parsedJSON['descendants'] ?? 0;
 
   ItemModel.fromDB(Map<String, dynamic> parsedJSON)
       : id = parsedJSON['id'],

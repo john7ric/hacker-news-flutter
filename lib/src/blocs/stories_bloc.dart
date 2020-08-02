@@ -7,6 +7,7 @@ class StoriesBloc {
   final _topIds = PublishSubject<List<int>>();
   final _itemsOutput = BehaviorSubject<Map<int, Future<ItemModel>>>();
   final _itemsFetcher = PublishSubject<int>();
+  final _repository = Repository();
 
   //getter to streams
   Stream<List<int>> get topIds => _topIds.stream;
@@ -14,18 +15,22 @@ class StoriesBloc {
 
   //getters to sink
   Function(int) get fetchItem => _itemsFetcher.sink.add;
+
   _scanTransformer() {
     return ScanStreamTransformer(
         (Map<int, Future<ItemModel>> cache, int id, count) {
-      print('fetcher called $count times');
-      cache[id] = Repository().fetchItem(id);
+      cache[id] = _repository.fetchItem(id);
       return cache;
     }, <int, Future<ItemModel>>{});
   }
 
   fetchTopIds() async {
-    final topIds = await Repository().fetchTopIds();
+    final topIds = await _repository.fetchTopIds();
     _topIds.sink.add(topIds);
+  }
+
+  clearCache() async {
+    await _repository.clearCache();
   }
 
   StoriesBloc() {
