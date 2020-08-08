@@ -27,6 +27,7 @@ class ListItem extends StatelessWidget {
 
                   ItemModel item = itemSnapshot.data;
                   return ListTile(
+                    onTap: () => Navigator.pushNamed(context, '/${item.id}'),
                     title: Text('${item.title}'),
                     subtitle: Text('${item.score} votes'),
                     trailing: Column(
