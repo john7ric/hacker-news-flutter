@@ -12,7 +12,7 @@ class NewsApiProvider implements Source {
 
   Future<List<int>> fetchTopIds() async {
     /// get top items id list
-    final response = await client.get('$_root/topstories.json');
+    final response = await client.get(Uri.parse('$_root/topstories.json'));
     final ids = json.decode(response.body);
     return List<int>.from(ids);
   }
@@ -20,7 +20,7 @@ class NewsApiProvider implements Source {
   Future<ItemModel> fetchItem(int id) async {
     /// get details of an item
     print('api is called for => $id');
-    final response = await client.get('$_root/item/$id.json');
+    final response = await client.get(Uri.parse('$_root/item/$id.json'));
     final parsedJson = json.decode(response.body);
     return ItemModel.fromJSON(parsedJson);
   }
